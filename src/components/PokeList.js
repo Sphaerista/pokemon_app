@@ -1,21 +1,27 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { fetchingData } from '../features/data-fetch/data-slice'
 import PokeItem from './PokeItem'
 import styles from "./PokeList.module.css"
 
 const PokeList = () => {
+    const pokemosRef = useRef([])
+    const [list,setList] = useState([])
     const [permData, setPermData] = useState([]);
     const [searchInput, setSearchInput] = useState("");
     const [myFavs, setMyFavs] = useState([]);
     const [checker,setChecker] = useState(true)
+    const [numberToAdd,setNumberToAdd]= useState(3)
     const dispatch = useDispatch()
     const data = useSelector(state=>state.fetchData.booksList)
-    let list = data.slice(0,3)
     const requestStatus = useSelector((state)=> state.fetchData.status)
     
     const fetchHandler = (e) => {
       e.preventDefault()
+      setChecker(prev=>!prev)
+      setList(data.slice(0,numberToAdd+3))
+      setNumberToAdd(prev=>prev+3)
+      console.log(numberToAdd,list)
       }
     
       const inputHandler = (e) => {
@@ -24,30 +30,21 @@ const PokeList = () => {
       const searchHandler = (e) => {
         e.preventDefault()
         console.log(searchInput, list)
-        list.filter((find)=>{
-          if(find.name === searchInput){
-            console.log('FOUND!',find.name)
-            setChecker(prev=>!prev)
-            list = find
-            // console.log(list,find)
-            setPermData(list)
-          }
-        })
+        const foundedpokemon = pokemosRef.current.filter(find =>  find.name === searchInput );
+        console.log(foundedpokemon)
+        setList(() => foundedpokemon);
       }
 
       const generationByHandler = (e) => {
         console.log(e.target.value,list)
-        let genArray = []
-        list.filter((poke)=>{
-          console.log(poke.generation)
-          if(poke.generation === e.target.value){
-            // console.log('FOUND!',poke)
-            setChecker(prev=>!prev)
-            genArray.push(poke)
-            setPermData(genArray)
+        if( !!e.target.value) {
+          const foundgeneration = pokemosRef.current.filter(poke=> poke.generation === e.target.value )
+          console.log(foundgeneration)
+          setList(() => foundgeneration.slice(0,3));
+        } else {
+          setList(() => pokemosRef.current.slice(0,3))
+        }
           }
-        })
-      }
 
       const saveToFavsHandler = (name) => {
         list.filter(poke=>{
@@ -66,14 +63,17 @@ const PokeList = () => {
           }
         })
       }
-
+      const testfn = (arr) => {
+        setList(arr.slice(0,3));
+        pokemosRef.current=arr;
+      }
       useEffect(()=>{
-        dispatch(fetchingData())
-        list = data
+        dispatch(fetchingData(testfn))
+        console.log('first_run!!!',list,data)
       },[])
 
       useEffect(()=>{
-        console.log(':!!UPDATED!!:',permData)
+        console.log(':!!UPDATED!!:',permData,list)
       },[checker,list])
 
       useEffect(()=>{
@@ -108,7 +108,8 @@ const PokeList = () => {
               id="generation"
               name="generation"
             >
-              <option value="">nogen</option>
+              <option value="">all</option>
+              <option value="no gen">nogen</option>
               <option value="generation-i">1</option>
               <option value="generation-ii">2</option>
               <option value="generation-iii">3</option>
@@ -122,9 +123,10 @@ const PokeList = () => {
     </div>
       {validdd && 
       <>
-      {list?.map((data)=>{
+      {list?.map(data => {
         return <PokeItem key={data?.name} id={data?.id} name={data?.name} generation={data?.generation} height={data?.height} weight={data?.weight} stats={data?.stats} favHandler={saveToFavsHandler}   />;
     })}
+    <button onClick={fetchHandler}>Load more!</button>
     </>
       }
       </>

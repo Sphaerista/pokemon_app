@@ -1,12 +1,13 @@
 import { dataActions } from "./data-action";
 
-export const fetchingData = () => {
+export const fetchingData = (cb) => {
     
     return async (dispatch) => {
         dispatch(dataActions.pendingRequest('pending'))
         const fetchPokData = async () => {
             const response = await fetch(
-                'https://pokeapi.co/api/v2/pokemon/?limit=54'
+                // 'https://pokeapi.co/api/v2/pokemon/?limit=54'
+                'https://pokeapi.co/api/v2/pokemon/?limit=54&offset=230'
                 );
                 
                 if(!response.ok){
@@ -44,7 +45,7 @@ export const fetchingData = () => {
                 const newObj = {
                         id: data?.id,
                         name: data?.name,
-                        generation : '',
+                        generation : 'no gen',
                         height: data?.height,
                         weight: data?.weight,
                         abilities: data?.abilities,
@@ -112,32 +113,33 @@ export const fetchingData = () => {
         
         try {
             const fetchedPokData = await fetchPokData();
-            console.log('fetchedData:::',fetchedPokData)
+            // console.log('fetchedData:::',fetchedPokData)
 
             const fetchedPokUrl = await fetchPokUrl(fetchedPokData);
-            console.log('fetchedUrl:::',fetchedPokUrl)
+            // console.log('fetchedUrl:::',fetchedPokUrl)
 
             const fetchedPokDetails = await fetchPokDetails(fetchedPokUrl);
-            console.log('fetchedDetails:::',fetchedPokDetails)
+            // console.log('fetchedDetails:::',fetchedPokDetails)
 
             const fetchedPokArray = await fetchPokArray(fetchedPokDetails);
-            console.log('fetchedArray:::',fetchedPokArray)
+            // console.log('fetchedArray:::',fetchedPokArray)
 
 
 
             const fetchedPokGens = await fetchPokGens();
-            console.log('fetchedGens:::',fetchedPokGens)
+            // console.log('fetchedGens:::',fetchedPokGens)
 
             const fetchedPokGenUrl = await fetchPokGenUrl(fetchedPokGens);
-            console.log('fetchedGenUrl:::',fetchedPokGenUrl)
+            // console.log('fetchedGenUrl:::',fetchedPokGenUrl)
 
             const fetchedPokGenDetails = await fetchPokGenDetails(fetchedPokGenUrl);
-            console.log('fetchedDetails:::',fetchedPokGenDetails)
+            // console.log('fetchedDetails:::',fetchedPokGenDetails)
 
             const fetchedPokGenArray = await fetchPokGenArray(fetchedPokArray,fetchedPokGenDetails);
-            console.log('fetchedArray:::',fetchedPokGenArray)
+            // console.log('fetchedArray:::',fetchedPokGenArray)
 
             dispatch(dataActions.fetchBooks(fetchedPokGenArray));
+            cb(fetchedPokGenArray)
             // dispatch(dataActions.fetchTotalItems(fetchedData[1]));
             dispatch(dataActions.finishedRequest('success'))
         } catch (e){
