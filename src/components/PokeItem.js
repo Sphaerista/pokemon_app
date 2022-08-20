@@ -8,13 +8,13 @@ const PokeItem = (props) => {
     // console.log(stat.base_stat, stat.effort, stat.stat.name)
   })
   let showStat = props.stats.map((stat)=>{
-    return <h4>{stat.stat.name} : {stat.base_stat}</h4>
+    return <div>{stat.stat.name} : {stat.base_stat}</div>
   })
-  console.log(showStat)
+  
   return (
     <>
     <div className={styles.borderCanva}>
-    <h1>{props.name}</h1>
+    <h1 onClick={()=>props.favHandler(props.name)}>{props.name}</h1>
     <div>id: {props.id}</div>
     <div>generation: {props.generation}</div>
     <div>weight: {props.weight}</div>

@@ -7,16 +7,15 @@ import styles from "./PokeList.module.css"
 const PokeList = () => {
     const [permData, setPermData] = useState([]);
     const [searchInput, setSearchInput] = useState("");
+    const [myFavs, setMyFavs] = useState([]);
     const [checker,setChecker] = useState(true)
     const dispatch = useDispatch()
     const data = useSelector(state=>state.fetchData.booksList)
-    let list = data
+    let list = data.slice(0,3)
     const requestStatus = useSelector((state)=> state.fetchData.status)
     
     const fetchHandler = (e) => {
       e.preventDefault()
-      dispatch(fetchingData())
-      list = data
       }
     
       const inputHandler = (e) => {
@@ -50,9 +49,37 @@ const PokeList = () => {
         })
       }
 
+      const saveToFavsHandler = (name) => {
+        list.filter(poke=>{
+          if(poke.name === name){
+            console.log(poke,myFavs,myFavs.length)
+            if (myFavs.length>0){
+              if(myFavs.includes(poke)){
+                console.log('already exists!!!')
+              }
+              else{
+                console.log('add me::::')
+                setMyFavs(prevArr=>[...prevArr,poke])
+              }
+            }
+            else setMyFavs([poke])
+          }
+        })
+      }
+
+      useEffect(()=>{
+        dispatch(fetchingData())
+        list = data
+      },[])
+
       useEffect(()=>{
         console.log(':!!UPDATED!!:',permData)
       },[checker,list])
+
+      useEffect(()=>{
+        // console.log(myFavs)
+          localStorage.setItem("favs", JSON.stringify(myFavs))
+      },[myFavs])
 
           // checking list existence
           const validdd = list?.length > 0 && requestStatus==='success'
@@ -93,11 +120,10 @@ const PokeList = () => {
             </select>
     </div>
     </div>
-      <button onClick={fetchHandler}>fetch Me!</button>
       {validdd && 
       <>
       {list?.map((data)=>{
-        return <PokeItem key={data?.name} id={data?.id} name={data?.name} generation={data?.generation} height={data?.height} weight={data?.weight} stats={data?.stats}   />;
+        return <PokeItem key={data?.name} id={data?.id} name={data?.name} generation={data?.generation} height={data?.height} weight={data?.weight} stats={data?.stats} favHandler={saveToFavsHandler}   />;
     })}
     </>
       }
