@@ -4,8 +4,7 @@ export const fetchingData = () => {
     
     return async (dispatch) => {
         dispatch(dataActions.pendingRequest('pending'))
-        let  finalResult = []
-        const fetchData = async () => {
+        const fetchPokData = async () => {
             const response = await fetch(
                 'https://pokeapi.co/api/v2/pokemon/?limit=54'
                 );
@@ -15,41 +14,50 @@ export const fetchingData = () => {
                 }
                 
                 const data = await response.json()
-                console.log('1',data)
-
+                // console.log('1',data.results)
+                return data.results;
+            };
                 // create array with poks without generation
-            const arrayPoks = [];
-            // if(data){
-                const urlData = data.results.forEach(element => {
-                    ( async () => {
-                        const response = await fetch(element.url)
-
-                    if(!response.ok){
-                        throw new Error("failed to fetch");
-                    }
-                
-                    const data = await response.json()
-                    console.log('2')
-                        const newObj = {
-                            id: data?.id,
-                            name: data?.name,
-                            generation : '',
-                            height: data?.height,
-                            weight: data?.weight,
-                            abilities: data?.abilities,
-                            stats: data?.stats
-                        }
-                        arrayPoks.push(newObj)
-                        // console.log(newObj,arrayPoks)
-                        return newObj
-                })()
-                
-
+        const fetchPokUrl = (fetchedPokData) => {
+            let arrayPoks = [];
+            const urlData = fetchedPokData.forEach(element => {
+                arrayPoks.push(element.url)
             });
-        // }
+            return arrayPoks
+        }
+
+        const fetchPokDetails = async (fetchedPokUrl) => {
+            const pokDetails = await Promise.all(
+                fetchedPokUrl.map(async (pokUrl)=>{
+                    const response = await fetch(pokUrl)
+                    const data = await response.json()
+                    // console.log(data)
+                    return data
+                })
+            )
+        return pokDetails
+        }
+
+        const fetchPokArray = (fetchedPokDetails) => {
+            let arrayPoks = [];
+            const urlData = fetchedPokDetails.forEach(data => {
+                const newObj = {
+                        id: data?.id,
+                        name: data?.name,
+                        generation : '',
+                        height: data?.height,
+                        weight: data?.weight,
+                        abilities: data?.abilities,
+                        stats: data?.stats
+                    }
+                    arrayPoks.push(newObj)
+                    // console.log('3',arrayPoks)
+            });
+            return arrayPoks
+        }
 
         // add generation to array with poks
-        const fetchGens = async () => {
+        const fetchPokGens = async () => {
             const response = await fetch(
                 'https://pokeapi.co/api/v2/generation/'
             );
@@ -59,47 +67,77 @@ export const fetchingData = () => {
             }
         
             const data = await response.json()
-            console.log('3',data)
-
-            // if(data){
-                // prom.all
-                const genData = data.results.forEach(element => {
-                    const fetchGen = async () => {
-                        const response = await fetch(element.url)
-    
-                        if(!response.ok){
-                            throw new Error("failed to fetch");
-                        }
-                    
-                        const data = await response.json()
-                        console.log('4',data)
-                        const addGen = arrayPoks.map((item)=>{
-                            data.pokemon_species.map((name)=>{
-                                if(item.name === name.name){
-                                    item.generation = data.name
-                                }
-                            })
-                        })
-                    }
-                    fetchGen()
-                });
-            // }
-            console.log(arrayPoks)
-            finalResult = arrayPoks;
-            console.log(finalResult)
-            return finalResult;
+            return data.results
         }
-        fetchGens()
-        console.log(finalResult)
-            // return [mappedArray,data.totalItems];
-        };
+
+        const fetchPokGenUrl = (fetchedPokGens) => {
+            let arrayGens = [];
+            const urlData = fetchedPokGens.forEach(element => {
+                arrayGens.push(element.url)
+            });
+            return arrayGens
+        }
+
+        const fetchPokGenDetails = async (fetchedPokGenUrl) => {
+            const pokDetails = await Promise.all(
+                fetchedPokGenUrl.map(async (pokGenUrl)=>{
+                    const response = await fetch(pokGenUrl)
+                    const data = await response.json()
+                    // console.log(data.name, data.pokemon_species)
+                    return data
+                })
+            )
+        return pokDetails
+        }
+
+        const fetchPokGenArray = (fetchedPokArray,fetchedPokGenDetails) => {
+            console.log('1',fetchedPokArray,fetchedPokGenDetails)
+            const addGen = fetchedPokArray.map((poke)=>{
+                // console.log(poke)
+                fetchedPokGenDetails.map((name)=>{
+                    // console.log('1',poke, name.name, name.pokemon_species)
+                    name.pokemon_species.map((specie)=>{
+                        // console.log(specie.name)
+                                if(poke.name === specie.name){
+                                    poke.generation = name.name
+                                    
+                                }
+                    })
+                
+                })
+                return poke
+            })
+            return addGen
+        }
         
         try {
-            const fetchedData = await fetchData();
-            const fetchedDet = await fetchDetail(fetchedData);
-            const fetchedGen = await fetchDetail(fetchedDet);
-            console.log('fetchedData:::',fetchedData)
-            dispatch(dataActions.fetchBooks(fetchedData));
+            const fetchedPokData = await fetchPokData();
+            console.log('fetchedData:::',fetchedPokData)
+
+            const fetchedPokUrl = await fetchPokUrl(fetchedPokData);
+            console.log('fetchedUrl:::',fetchedPokUrl)
+
+            const fetchedPokDetails = await fetchPokDetails(fetchedPokUrl);
+            console.log('fetchedDetails:::',fetchedPokDetails)
+
+            const fetchedPokArray = await fetchPokArray(fetchedPokDetails);
+            console.log('fetchedArray:::',fetchedPokArray)
+
+
+
+            const fetchedPokGens = await fetchPokGens();
+            console.log('fetchedGens:::',fetchedPokGens)
+
+            const fetchedPokGenUrl = await fetchPokGenUrl(fetchedPokGens);
+            console.log('fetchedGenUrl:::',fetchedPokGenUrl)
+
+            const fetchedPokGenDetails = await fetchPokGenDetails(fetchedPokGenUrl);
+            console.log('fetchedDetails:::',fetchedPokGenDetails)
+
+            const fetchedPokGenArray = await fetchPokGenArray(fetchedPokArray,fetchedPokGenDetails);
+            console.log('fetchedArray:::',fetchedPokGenArray)
+
+            dispatch(dataActions.fetchBooks(fetchedPokGenArray));
             // dispatch(dataActions.fetchTotalItems(fetchedData[1]));
             dispatch(dataActions.finishedRequest('success'))
         } catch (e){
