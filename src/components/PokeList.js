@@ -11,17 +11,18 @@ const PokeList = () => {
     const [searchInput, setSearchInput] = useState("");
     const [myFavs, setMyFavs] = useState([]);
     const [checker,setChecker] = useState(true)
+    const [defaultCatValue,setDefaultCatValue] = useState('SELECT')
     const [numberToAdd,setNumberToAdd]= useState(3)
     const dispatch = useDispatch()
     const data = useSelector(state=>state.fetchData.booksList)
     const requestStatus = useSelector((state)=> state.fetchData.status)
     
-    const fetchHandler = (e) => {
+    const loadMoreHandler = (e) => {
       e.preventDefault()
+      console.log(list,data,permData,pokemosRef.current)
       setChecker(prev=>!prev)
-      setList(data.slice(0,numberToAdd+3))
+      setList(permData.slice(0,numberToAdd+3))
       setNumberToAdd(prev=>prev+3)
-      console.log(numberToAdd,list)
       }
     
       const inputHandler = (e) => {
@@ -29,22 +30,26 @@ const PokeList = () => {
       }
       const searchHandler = (e) => {
         e.preventDefault()
-        console.log(searchInput, list)
+        setDefaultCatValue('SELECT')
         const foundedpokemon = pokemosRef.current.filter(find =>  find.name === searchInput );
         console.log(foundedpokemon)
         setList(() => foundedpokemon);
       }
 
       const generationByHandler = (e) => {
-        console.log(e.target.value,list)
+        setDefaultCatValue(e.target.value)
+        setNumberToAdd(3)
         if( !!e.target.value) {
           const foundgeneration = pokemosRef.current.filter(poke=> poke.generation === e.target.value )
-          console.log(foundgeneration)
+          setPermData(foundgeneration)
+          console.log(foundgeneration,pokemosRef.current,permData)
           setList(() => foundgeneration.slice(0,3));
         } else {
+          setNumberToAdd(3)
+          setPermData(pokemosRef.current)
           setList(() => pokemosRef.current.slice(0,3))
         }
-          }
+      }
 
       const saveToFavsHandler = (name) => {
         list.filter(poke=>{
@@ -63,17 +68,19 @@ const PokeList = () => {
           }
         })
       }
+      // callback fn
       const testfn = (arr) => {
         setList(arr.slice(0,3));
+        setPermData(arr)
         pokemosRef.current=arr;
       }
       useEffect(()=>{
         dispatch(fetchingData(testfn))
-        console.log('first_run!!!',list,data)
+        // console.log('first_run!!!',list,data)
       },[])
 
       useEffect(()=>{
-        console.log(':!!UPDATED!!:',permData,list)
+        // console.log(':!!UPDATED!!:',permData,list)
       },[checker,list])
 
       useEffect(()=>{
@@ -107,7 +114,9 @@ const PokeList = () => {
               onChange={generationByHandler}
               id="generation"
               name="generation"
+              value={defaultCatValue}
             >
+              <option value="SELECT" defaultValue disabled hidden>SELECT GEN</option>
               <option value="">all</option>
               <option value="no gen">nogen</option>
               <option value="generation-i">1</option>
@@ -126,7 +135,7 @@ const PokeList = () => {
       {list?.map(data => {
         return <PokeItem key={data?.name} id={data?.id} name={data?.name} generation={data?.generation} height={data?.height} weight={data?.weight} stats={data?.stats} favHandler={saveToFavsHandler}   />;
     })}
-    <button onClick={fetchHandler}>Load more!</button>
+    {list.length>1 && <button onClick={loadMoreHandler}>Load more!</button>}
     </>
       }
       </>
