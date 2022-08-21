@@ -8,7 +8,10 @@ const PokeFavs = () => {
     const [isDeleteBtn,setIsDeleteBtn] = useState(true)
 
     const deleteFromFavsHandler = (name) => {
-        console.log(name)
+        const loadedFavs = JSON.parse(localStorage.getItem("favs"))
+        const filtered = loadedFavs.filter(fav => fav.name !== name.name)
+        setFavs(filtered)
+        localStorage.setItem("favs", JSON.stringify(filtered))
     }
 
     useEffect(()=>{
