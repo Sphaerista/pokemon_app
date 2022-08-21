@@ -2,8 +2,8 @@ import React, { useEffect, useRef, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { useNavigate } from 'react-router-dom'
 import { fetchingData } from '../features/data-fetch/data-slice'
-import PokeItem from './PokeItem'
-import styles from "./PokeList.module.css"
+import PokeItem from '../components/PokeItem'
+import styles from "./MainPage.module.css"
 
 const PokeList = () => {
     const navigate = useNavigate()
@@ -71,27 +71,24 @@ const PokeList = () => {
         const loadedFavs = JSON.parse(localStorage.getItem("favs"))
         if (loadedFavs) {
         setMyFavs(loadedFavs)}
-        // console.log('first_step!!!',notFirstRun)
       },[])
 
       useEffect(()=>{
-        // console.log('second_step!!!',notFirstRun)
         if(notFirstRun===true){
           localStorage.setItem("favs", JSON.stringify(myFavs))}
-      },[myFavs])
-
-          // checking list existence
-          const validdd = list?.length > 0 && requestStatus==='success'
-          const notValiddd = list?.length < 1 && requestStatus==='success'
-          const notFinished = list?.length < 1 && requestStatus==='pending'
-          const notYetFinished = list?.length > 0 && requestStatus==='pending'
-
-
+        },[myFavs])
+        
+        // checking list existence
+        const validdd = list?.length > 0 && requestStatus==='success'
+        const notValiddd = list?.length < 1 && requestStatus==='success'
+        const notFinished = list?.length < 1 && requestStatus==='pending'
+        const notYetFinished = list?.length > 0 && requestStatus==='pending'
+        
   return (
       <>
-      <div>PokeList</div>
-      <button onClick={()=>{navigate("/myfavs")}}>My Favs</button>
-      <div>
+      <div className={styles.header}>
+      <button className={styles.btn} onClick={()=>{navigate("/myfavs")}}>My Favs</button>
+      <div className={styles.bookList}>
       <form className={styles.searchForm} onSubmit={searchHandler}>
       <input
             type="search"
@@ -123,10 +120,11 @@ const PokeList = () => {
             </select>
     </div>
     </div>
+    </div>
       {validdd && 
       <>
       {list?.map(data => {
-        return <PokeItem self={data} key={data?.name} id={data?.id} name={data?.name} generation={data?.generation} height={data?.height} weight={data?.weight} stats={data?.stats} favHandler={saveToFavsHandler}   />;
+        return <PokeItem self={data} key={data?.name} id={data?.id} name={data?.name} generation={data?.generation} height={data?.height} weight={data?.weight} stats={data?.stats} img={data?.img} favHandler={saveToFavsHandler}   />;
     })}
     {list.length>1 && <button onClick={loadMoreHandler}>Load more!</button>}
     </>

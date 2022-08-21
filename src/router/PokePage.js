@@ -38,7 +38,9 @@ const PokePage = () => {
     {validdd &&
     <>
       <div>PokePage</div>
+      <button onClick={()=>{navigate("/")}}>Home</button>
       <h1>{params}</h1>
+      <img src={poke.img}/>
       <div>id: {poke?.id}</div>
       <div>generation: {poke?.generation}</div>
       <div>weight: {poke?.weight}</div>

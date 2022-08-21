@@ -1,8 +1,8 @@
 import React, { useEffect } from 'react';
 import { Routes, Route } from 'react-router-dom';
 import './App.css';
-import PokeList from './components/PokeList';
-import PokePage from './components/PokePage';
+import PokeList from './router/MainPage';
+import PokePage from './router/PokePage';
 import PokeFavs from './components/PokeFavs';
 import { useDispatch } from 'react-redux';
 import { fetchingData } from './features/data-fetch/data-slice';
