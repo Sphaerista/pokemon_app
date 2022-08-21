@@ -1,16 +1,18 @@
 import React, { useEffect, useRef, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
+import { useNavigate } from 'react-router-dom'
 import { fetchingData } from '../features/data-fetch/data-slice'
 import PokeItem from './PokeItem'
 import styles from "./PokeList.module.css"
 
 const PokeList = () => {
+    const navigate = useNavigate()
     const pokemosRef = useRef([])
     const [list,setList] = useState([])
     const [permData, setPermData] = useState([]);
     const [searchInput, setSearchInput] = useState("");
     const [myFavs, setMyFavs] = useState([]);
-    const [checker,setChecker] = useState(true)
+    const [notFirstRun,setNotFirstRun] = useState(false)
     const [defaultCatValue,setDefaultCatValue] = useState('SELECT')
     const [numberToAdd,setNumberToAdd]= useState(3)
     const dispatch = useDispatch()
@@ -20,7 +22,6 @@ const PokeList = () => {
     const loadMoreHandler = (e) => {
       e.preventDefault()
       console.log(list,data,permData,pokemosRef.current)
-      setChecker(prev=>!prev)
       setList(permData.slice(0,numberToAdd+3))
       setNumberToAdd(prev=>prev+3)
       }
@@ -51,23 +52,14 @@ const PokeList = () => {
         }
       }
 
-      const saveToFavsHandler = (name) => {
-        list.filter(poke=>{
-          if(poke.name === name){
-            console.log(poke,myFavs,myFavs.length)
-            if (myFavs.length>0){
-              if(myFavs.includes(poke)){
-                console.log('already exists!!!')
-              }
-              else{
-                console.log('add me::::')
-                setMyFavs(prevArr=>[...prevArr,poke])
-              }
-            }
-            else setMyFavs([poke])
-          }
-        })
+      const saveToFavsHandler = (poke) => {
+        setNotFirstRun(true)
+        console.log(myFavs,poke)
+        if (myFavs.length>0){
+          return myFavs.filter(e=>e.name === poke.name).length>0 ? false : setMyFavs(prevArr=>[...prevArr,poke])
+        } else {setMyFavs([poke])}
       }
+
       // callback fn
       const testfn = (arr) => {
         setList(arr.slice(0,3));
@@ -76,16 +68,16 @@ const PokeList = () => {
       }
       useEffect(()=>{
         dispatch(fetchingData(testfn))
-        // console.log('first_run!!!',list,data)
+        const loadedFavs = JSON.parse(localStorage.getItem("favs"))
+        if (loadedFavs) {
+        setMyFavs(loadedFavs)}
+        // console.log('first_step!!!',notFirstRun)
       },[])
 
       useEffect(()=>{
-        // console.log(':!!UPDATED!!:',permData,list)
-      },[checker,list])
-
-      useEffect(()=>{
-        // console.log(myFavs)
-          localStorage.setItem("favs", JSON.stringify(myFavs))
+        // console.log('second_step!!!',notFirstRun)
+        if(notFirstRun===true){
+          localStorage.setItem("favs", JSON.stringify(myFavs))}
       },[myFavs])
 
           // checking list existence
@@ -98,6 +90,7 @@ const PokeList = () => {
   return (
       <>
       <div>PokeList</div>
+      <button onClick={()=>{navigate("/myfavs")}}>My Favs</button>
       <div>
       <form className={styles.searchForm} onSubmit={searchHandler}>
       <input
@@ -133,7 +126,7 @@ const PokeList = () => {
       {validdd && 
       <>
       {list?.map(data => {
-        return <PokeItem key={data?.name} id={data?.id} name={data?.name} generation={data?.generation} height={data?.height} weight={data?.weight} stats={data?.stats} favHandler={saveToFavsHandler}   />;
+        return <PokeItem self={data} key={data?.name} id={data?.id} name={data?.name} generation={data?.generation} height={data?.height} weight={data?.weight} stats={data?.stats} favHandler={saveToFavsHandler}   />;
     })}
     {list.length>1 && <button onClick={loadMoreHandler}>Load more!</button>}
     </>
