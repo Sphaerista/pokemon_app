@@ -24,7 +24,7 @@ const PokeItem = (props) => {
     <div>height: {props.height}</div>
     <h3>stats: {showStat}</h3>
     <button className={styles.btn} onClick={()=>{navigate(`/pokemon/${props.name}`)}}>More info</button>
-    <button onClick={()=>props.favHandler(props.name)}>Add to favs</button>
+    <button onClick={()=>props.favHandler(props.self)}>{props.isDeleteBtn ? 'Delete from favs' : 'Add to favs'}</button>
     </div>
     </>
   )
