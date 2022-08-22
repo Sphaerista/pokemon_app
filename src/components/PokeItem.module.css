@@ -1,0 +1,108 @@
+.pokeItem {
+    margin: .5rem;
+    background-color: whitesmoke;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    width: 40%;
+    border-radius: 10px;
+}
+
+.pokeItem h1 {
+    margin: .5rem;
+    text-align: center;
+}
+
+.imgContainer {
+    display: flex;
+    justify-content: center;
+}
+
+.imgContainer img {
+    max-width: 90%;
+    margin-top: 20px;
+}
+
+.btnContainer {
+    display: flex;
+    justify-content: space-between;
+}
+
+.stats {
+    display: flex;
+    flex-direction: column;
+    margin-top: .7rem;
+    width: 55%;
+}
+
+.stat {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    margin-bottom: .2rem;
+    border-bottom: 1px solid rgb(224, 224, 224);
+}
+
+.statPoint {
+    font-weight: bold;
+}
+
+.btn {
+    margin: 1rem .5rem 1rem;
+    padding: .5rem;
+    border: none;
+    width: 120px;
+    height: 40px;
+    color: #ffffff;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: 0.2s;
+}
+
+.infoBtn {
+    background: #838f88;
+}
+
+.infoBtn:hover {
+    background: #4c534f;
+}
+
+.infoBtn:active {
+    background: #000000;
+  }
+
+.favsBtn {
+    background: #d18843;;
+}
+
+.favsBtn:hover {
+    background: #c04903;
+}
+
+.favsBtn:active {
+    background: #c00303;
+  }
+
+@media (max-width: 768px) {
+    .pokeItem {
+        width: 70%;
+    }
+}
+
+@media (min-width: 1024px) {
+    .pokeItem {
+        width: 30%;
+        justify-content: space-between;
+    }
+}
+
+@media (min-width: 1200px) {
+    .pokeItem {
+        width: 30%;
+        justify-content: space-between;
+    }
+}

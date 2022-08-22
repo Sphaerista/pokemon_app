@@ -1,11 +1,12 @@
 import React, { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import PokeItem from './PokeItem'
+import styles from "./PokeFavs.module.css"
 
 const PokeFavs = () => {
     const navigate = useNavigate()
     const [favs,setFavs] = useState([])
-    const [isDeleteBtn,setIsDeleteBtn] = useState(true)
+    const [isFavPage,setIsFavPage] = useState(true)
 
     const deleteFromFavsHandler = (name) => {
         const loadedFavs = JSON.parse(localStorage.getItem("favs"))
@@ -20,14 +21,15 @@ const PokeFavs = () => {
             setFavs(loadedFavs)
         }
       },[])
-      console.log(favs)
+
   return (
     <>
-    <div>PokeFavs</div>
-    <button onClick={() => navigate(-1)}>Back</button>
+    <button className={styles.btn} onClick={() => navigate(-1)}>Back</button>
+    <div className={styles.favList}>
     {favs?.map(data => {
-        return <PokeItem self={data} key={data?.name} id={data?.id} name={data?.name} generation={data?.generation} height={data?.height} weight={data?.weight} stats={data?.stats} favHandler={deleteFromFavsHandler} isDeleteBtn={isDeleteBtn}   />;
+        return <PokeItem self={data} key={data?.name} id={data?.id} name={data?.name} generation={data?.generation} height={data?.height} weight={data?.weight} stats={data?.stats} img={data?.img} favHandler={deleteFromFavsHandler} isFavPage={isFavPage}   />;
     })}
+    </div>
     </>
   )
 }
