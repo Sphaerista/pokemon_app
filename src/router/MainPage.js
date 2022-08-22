@@ -22,8 +22,8 @@ const PokeList = () => {
     const loadMoreHandler = (e) => {
       e.preventDefault()
       console.log(list,data,permData,pokemosRef.current)
-      setList(permData.slice(0,numberToAdd+3))
-      setNumberToAdd(prev=>prev+3)
+      setList(permData.slice(0,numberToAdd+4))
+      setNumberToAdd(prev=>prev+4)
       }
     
       const inputHandler = (e) => {
@@ -39,16 +39,16 @@ const PokeList = () => {
 
       const generationByHandler = (e) => {
         setDefaultCatValue(e.target.value)
-        setNumberToAdd(3)
+        setNumberToAdd(4)
         if( !!e.target.value) {
           const foundgeneration = pokemosRef.current.filter(poke=> poke.generation === e.target.value )
           setPermData(foundgeneration)
           console.log(foundgeneration,pokemosRef.current,permData)
-          setList(() => foundgeneration.slice(0,3));
+          setList(() => foundgeneration.slice(0,4));
         } else {
-          setNumberToAdd(3)
+          setNumberToAdd(4)
           setPermData(pokemosRef.current)
-          setList(() => pokemosRef.current.slice(0,3))
+          setList(() => pokemosRef.current.slice(0,4))
         }
       }
 
@@ -62,7 +62,7 @@ const PokeList = () => {
 
       // callback fn
       const testfn = (arr) => {
-        setList(arr.slice(0,3));
+        setList(arr.slice(0,4));
         setPermData(arr)
         pokemosRef.current=arr;
       }
@@ -87,8 +87,7 @@ const PokeList = () => {
   return (
       <>
       <div className={styles.header}>
-      <button className={styles.btn} onClick={()=>{navigate("/myfavs")}}>My Favs</button>
-      <div className={styles.bookList}>
+      <div className={styles.options}>
       <form className={styles.searchForm} onSubmit={searchHandler}>
       <input
             type="search"
@@ -99,7 +98,7 @@ const PokeList = () => {
           <button type='submit' disabled={searchInput.length<1}>Search</button>
       </form>
 
-      <div className={styles.byGeneration}>Generations
+      <div className={styles.byGeneration}>Generations: 
             <select
               onChange={generationByHandler}
               id="generation"
@@ -120,13 +119,18 @@ const PokeList = () => {
             </select>
     </div>
     </div>
+    <button className={styles.btn} onClick={()=>{navigate("/myfavs")}}>My Favs</button>
     </div>
       {validdd && 
       <>
+      <div className={styles.pokeList}>
       {list?.map(data => {
         return <PokeItem self={data} key={data?.name} id={data?.id} name={data?.name} generation={data?.generation} height={data?.height} weight={data?.weight} stats={data?.stats} img={data?.img} favHandler={saveToFavsHandler}   />;
-    })}
-    {list.length>1 && <button onClick={loadMoreHandler}>Load more!</button>}
+        })}
+      </div>
+      <div className={styles.moreBtnContainer}>
+      {list.length>1 && <button onClick={loadMoreHandler}>Load more!</button>}
+      </div>
     </>
       }
       </>
