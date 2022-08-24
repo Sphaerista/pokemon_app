@@ -1,46 +1,38 @@
-# Getting Started with Create React App and Redux
+# How to open this project online
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app), using the [Redux](https://redux.js.org/) and [Redux Toolkit](https://redux-toolkit.js.org/) template.
+https://63065a80130b8403d2ad3eb7--spectacular-gumption-fc49f7.netlify.app/
 
-## Available Scripts
+## How to open this project locally
 
-In the project directory, you can run:
+Just clone the project and run with docker:
+docker build -t 'app_name' .
+docker run -dp 3000:3000 'app_name'
 
-### `npm start`
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
+Alternatively, you can just npm start.
 
-The page will reload when you make changes.\
-You may also see any lint errors in the console.
+## Used libraries
 
-### `npm test`
+Only Redux toolkit was used as a library to simplify the app’s state especially the pokemon’s list.
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+## Challenges
 
-### `npm run build`
+The main difficulty was to construct pokemon object as its different aspects are located in different APIs, so it was necessary to use multiple functions in data-action js to combine all the data in one pokemon object. That's why it takes time to load the data for the first time.
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+## Extra features
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+Deleting pokemons from the favourite list
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+## Room for improvement
 
-### `npm run eject`
+Posibility to add colors while comparing pokemons's stats, so it would be easier to understand which pokemon is better.
 
-**Note: this is a one-way operation. Once you `eject`, you can't go back!**
+Refactoring dispatch actions to avoid some duplications in several components.
 
-If you aren't satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+Refactoring some of the pages to folloew the separation of concern rule.
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you're on your own.
+Make better responsiveness and smoother interface.
 
-You don't have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn't feel obligated to use this feature. However we understand that this tool wouldn't be useful if you couldn't customize it when you are ready for it.
+Move some of the functions from the components to the global redux state.
 
-## Learn More
-
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
-
-To learn React, check out the [React documentation](https://reactjs.org/).
+Implement better search function (for example extended search).
