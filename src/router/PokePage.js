@@ -24,10 +24,10 @@ const PokePage = () => {
   
   const favHandler = (poke) => {
     setNotFirstRun(true)
-        console.log(myFavs,poke)
-        if (myFavs.length>0){
-          return myFavs.filter(e=>e.name === poke.name).length>0 ? false : setMyFavs(prevArr=>[...prevArr,poke])
-        } else {setMyFavs([poke])}
+      console.log(myFavs,poke)
+      if (myFavs.length>0){
+        return myFavs.filter(e=>e.name === poke.name).length>0 ? false : setMyFavs(prevArr=>[...prevArr,poke])
+      } else {setMyFavs([poke])}
   }
 
   useEffect(()=>{
@@ -54,6 +54,7 @@ const PokePage = () => {
     </div>
     </>
   })  
+
   let showStatSecond = comparedPoke?.stats.map((stat)=>{
     return <>
     <div className={styles.stat}>
@@ -70,74 +71,74 @@ const PokePage = () => {
     {validdd &&
     <>   
       <div className={styles.btnsContainer}>
-      <button className={`${styles.btn} ${styles.backBtn}`} onClick={() => navigate(-1)}>Back</button>
-      <button className={`${styles.btn} ${styles.homeBtn}`} onClick={()=>{navigate("/")}}>Home</button>
+        <button className={`${styles.btn} ${styles.backBtn}`} onClick={() => navigate(-1)}>Back</button>
+        <button className={`${styles.btn} ${styles.homeBtn}`} onClick={()=>{navigate("/")}}>Home</button>
       </div>
       <div className={styles.pokes}>
-      <div className={styles.leftSide}>
-      <div className={styles.poke}>
-      <h1>{poke?.name}</h1>
-      <div className={styles.imgContainer}><img src={poke?.img}/></div>
-      <div className={styles.generation}>{poke?.generation}</div>
-      <div className={styles.stats}>
-      <div className={styles.stat}>
-      <div>weight</div>
-      <div>{poke?.weight}</div>
+        <div className={styles.leftSide}>
+          <div className={styles.poke}>
+            <h1>{poke?.name}</h1>
+            <div className={styles.imgContainer}><img src={poke?.img}/></div>
+            <div className={styles.generation}>{poke?.generation}</div>
+            <div className={styles.stats}>
+              <div className={styles.stat}>
+                <div>weight</div>
+                <div>{poke?.weight}</div>
+              </div>
+              <div className={styles.stat}>
+                <div>height</div>
+                <div>{poke?.height}</div>
+              </div>
+              <div>{showStatFirst}</div>
+            </div>
+            <div className={styles.btnContainer}>
+              <button className={`${styles.btn} ${styles.favBtn}`} onClick={()=>favHandler(poke)}>Add to favs</button>
+            </div>
+          </div>
+        </div>
+        
+        <div className={`${styles.rightSide} ${showCompared && styles.rightSideActive}`}>
+          <div className={styles.compareWith}>Compare with
+            <select
+              onChange={comparisonHandler}
+              id="pokelist"
+              name="pokelist"
+              // value={defaultCatValue}
+            >
+              <option value="SELECT" defaultValue hidden>SELECT poke</option>
+              <option value="none">no comparison</option>
+              {pokeList}
+            </select>
+          </div>
+          {showCompared && <>
+          <div className={styles.poke}>
+            <h1>{comparedPoke.name}</h1>
+            <div className={styles.imgContainer}><img src={comparedPoke.img}/></div>
+            <div className={styles.generation}>{comparedPoke.generation}</div>
+            <div className={styles.stats}>
+              <div className={styles.stat}>
+                <div>{comparedPoke.weight}</div>
+                <div>weight</div>
+              </div>
+              <div className={styles.stat}>
+                <div>{comparedPoke.height}</div>
+                <div>height</div>
+              </div>
+              <div>{showStatSecond}</div>
+            </div>
+            <div className={styles.btnContainer}>
+              <button className={`${styles.btn} ${styles.favBtn}`} onClick={()=>favHandler(comparedPoke)}>Add to favs</button>
+            </div>
+          </div>
+          </>}
+        </div>
       </div>
-      <div className={styles.stat}>
-      <div>height</div>
-      <div>{poke?.height}</div>
-      </div>
-      <div>{showStatFirst}</div>
-      </div>
-      <div className={styles.btnContainer}>
-      <button className={`${styles.btn} ${styles.favBtn}`} onClick={()=>favHandler(poke)}>Add to favs</button>
-      </div>
-      </div>
-      </div>
-      
-      <div className={`${styles.rightSide} ${showCompared && styles.rightSideActive}`}>
-      <div className={styles.compareWith}>Compare with
-              <select
-                onChange={comparisonHandler}
-                id="pokelist"
-                name="pokelist"
-                // value={defaultCatValue}
-              >
-                <option value="SELECT" defaultValue hidden>SELECT poke</option>
-                <option value="none">no comparison</option>
-                {pokeList}
-              </select>
-      </div>
-      {showCompared && <>
-      <div className={styles.poke}>
-      <h1>{comparedPoke.name}</h1>
-      <div className={styles.imgContainer}><img src={comparedPoke.img}/></div>
-      <div className={styles.generation}>{comparedPoke.generation}</div>
-      <div className={styles.stats}>
-      <div className={styles.stat}>
-      <div>{comparedPoke.weight}</div>
-      <div>weight</div>
-      </div>
-      <div className={styles.stat}>
-      <div>{comparedPoke.height}</div>
-      <div>height</div>
-      </div>
-      <div>{showStatSecond}</div>
-      </div>
-      <div className={styles.btnContainer}>
-      <button className={`${styles.btn} ${styles.favBtn}`} onClick={()=>favHandler(comparedPoke)}>Add to favs</button>
-      </div>
-      </div>
-      </>}
-      </div>
-      </div>
-      </>}
+    </>}
       {notValiddd &&
       <div className={styles.loading}>
       <LoadingSpinner/>
     </div>}
-      </>
+    </>
   )
 }
 

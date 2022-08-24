@@ -24,12 +24,12 @@ const PokeFavs = () => {
 
   return (
     <>
-    <button className={styles.btn} onClick={() => navigate(-1)}>Back</button>
-    <div className={styles.favList}>
-    {favs?.map(data => {
-        return <PokeItem self={data} key={data?.name} id={data?.id} name={data?.name} generation={data?.generation} height={data?.height} weight={data?.weight} stats={data?.stats} img={data?.img} favHandler={deleteFromFavsHandler} isFavPage={isFavPage}   />;
-    })}
-    </div>
+        <button className={styles.btn} onClick={() => navigate(-1)}>Back</button>
+        <div className={styles.favList}>
+            {favs?.map(data => {
+                return <PokeItem self={data} key={data?.name} id={data?.id} name={data?.name} generation={data?.generation} height={data?.height} weight={data?.weight} stats={data?.stats} img={data?.img} favHandler={deleteFromFavsHandler} isFavPage={isFavPage}   />;
+            })}
+        </div>
     </>
   )
 }
