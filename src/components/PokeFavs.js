@@ -30,6 +30,9 @@ const PokeFavs = () => {
                 return <PokeItem self={data} key={data?.name} id={data?.id} name={data?.name} generation={data?.generation} height={data?.height} weight={data?.weight} stats={data?.stats} img={data?.img} favHandler={deleteFromFavsHandler} isFavPage={isFavPage}   />;
             })}
         </div>
+        {favs.length < 1 && 
+        <h1 className={styles.noFavs}>You do not have any pokemon!</h1>
+        }
     </>
   )
 }

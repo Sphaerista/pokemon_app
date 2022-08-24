@@ -30,3 +30,9 @@
     background-color: rgb(250, 250, 250);
     color: black;
   }
+
+  .noFavs {
+    display: flex;
+    justify-content: center;
+    margin-top: 10%;
+  }
