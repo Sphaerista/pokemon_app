@@ -1,13 +1,13 @@
 import { dataActions } from "./data-action";
 
-export const fetchingData = (cb) => {
+export const fetchingData = (cb,num) => {
     
     return async (dispatch) => {
         dispatch(dataActions.pendingRequest('pending'))
         const fetchPokData = async () => {
             const response = await fetch(
-                // 'https://pokeapi.co/api/v2/pokemon/?limit=54'
-                'https://pokeapi.co/api/v2/pokemon/?limit=54&offset=230'
+                `https://pokeapi.co/api/v2/pokemon/?limit=${num}`
+                // 'https://pokeapi.co/api/v2/pokemon/?limit=${num}&offset=150'
                 );
                 
                 if(!response.ok){
@@ -15,7 +15,6 @@ export const fetchingData = (cb) => {
                 }
                 
                 const data = await response.json()
-                // console.log('1',data.results)
                 return data.results;
             };
                 // create array with poks without generation
@@ -32,7 +31,6 @@ export const fetchingData = (cb) => {
                 fetchedPokUrl.map(async (pokUrl)=>{
                     const response = await fetch(pokUrl)
                     const data = await response.json()
-                    // console.log(data)
                     return data
                 })
             )
@@ -46,13 +44,13 @@ export const fetchingData = (cb) => {
                         id: data?.id,
                         name: data?.name,
                         generation : 'no gen',
+                        img : data?.sprites.front_default,
                         height: data?.height,
                         weight: data?.weight,
                         abilities: data?.abilities,
                         stats: data?.stats
                     }
                     arrayPoks.push(newObj)
-                    // console.log('3',arrayPoks)
             });
             return arrayPoks
         }
@@ -84,7 +82,6 @@ export const fetchingData = (cb) => {
                 fetchedPokGenUrl.map(async (pokGenUrl)=>{
                     const response = await fetch(pokGenUrl)
                     const data = await response.json()
-                    // console.log(data.name, data.pokemon_species)
                     return data
                 })
             )
@@ -92,13 +89,9 @@ export const fetchingData = (cb) => {
         }
 
         const fetchPokGenArray = (fetchedPokArray,fetchedPokGenDetails) => {
-            console.log('1',fetchedPokArray,fetchedPokGenDetails)
             const addGen = fetchedPokArray.map((poke)=>{
-                // console.log(poke)
                 fetchedPokGenDetails.map((name)=>{
-                    // console.log('1',poke, name.name, name.pokemon_species)
                     name.pokemon_species.map((specie)=>{
-                        // console.log(specie.name)
                                 if(poke.name === specie.name){
                                     poke.generation = name.name
                                     
@@ -112,113 +105,24 @@ export const fetchingData = (cb) => {
         }
         
         try {
+            // create array with pokemos
             const fetchedPokData = await fetchPokData();
-            // console.log('fetchedData:::',fetchedPokData)
-
-            const fetchedPokUrl = await fetchPokUrl(fetchedPokData);
-            // console.log('fetchedUrl:::',fetchedPokUrl)
-
+            const fetchedPokUrl = fetchPokUrl(fetchedPokData);
             const fetchedPokDetails = await fetchPokDetails(fetchedPokUrl);
-            // console.log('fetchedDetails:::',fetchedPokDetails)
-
-            const fetchedPokArray = await fetchPokArray(fetchedPokDetails);
-            // console.log('fetchedArray:::',fetchedPokArray)
+            const fetchedPokArray = fetchPokArray(fetchedPokDetails);
 
 
-
+            // add generations to created array with pokemos
             const fetchedPokGens = await fetchPokGens();
-            // console.log('fetchedGens:::',fetchedPokGens)
-
-            const fetchedPokGenUrl = await fetchPokGenUrl(fetchedPokGens);
-            // console.log('fetchedGenUrl:::',fetchedPokGenUrl)
-
+            const fetchedPokGenUrl = fetchPokGenUrl(fetchedPokGens);
             const fetchedPokGenDetails = await fetchPokGenDetails(fetchedPokGenUrl);
-            // console.log('fetchedDetails:::',fetchedPokGenDetails)
-
             const fetchedPokGenArray = await fetchPokGenArray(fetchedPokArray,fetchedPokGenDetails);
-            // console.log('fetchedArray:::',fetchedPokGenArray)
 
-            dispatch(dataActions.fetchBooks(fetchedPokGenArray));
+            dispatch(dataActions.fetchPokes(fetchedPokGenArray));
             cb(fetchedPokGenArray)
-            // dispatch(dataActions.fetchTotalItems(fetchedData[1]));
             dispatch(dataActions.finishedRequest('success'))
         } catch (e){
             dispatch(dataActions.finishedRequest('success'))    
-            console.log(e);
-        }
-    };
-};
-
-export const fetchingBook = (bookId) => {
-    
-    return async (dispatch) => {
-        dispatch(dataActions.pendingRequest('pending'))
-        const fetchBook = async () => {
-            const response = await fetch(
-                `https://www.googleapis.com/books/v1/volumes/${bookId}`
-            );
-
-            if(!response.ok){
-                throw new Error("failed to fetch");
-            }
-
-            const data = await response.json()
-            const newObj = {
-                id: data?.id,
-                etag: data?.etag,
-                title: data?.volumeInfo?.title,
-                authors: data?.volumeInfo?.authors,
-                categories: data?.volumeInfo?.categories,
-                imageLink: data?.volumeInfo?.imageLinks?.thumbnail,
-                description: data?.volumeInfo?.description,
-
-            }
-                return newObj
-        };
-
-        try {
-            const fetchedBook = await fetchBook();
-            dispatch(dataActions.fetchBook(fetchedBook));
-            dispatch(dataActions.finishedRequest('success'))
-        } catch (e){
-            console.log(e);
-        }
-    };
-};
-
-export const fetchingMoreData = (numberToAdd,searchInput,orderBy,categoryBy) => {
-    
-    return async (dispatch) => {
-        const fetchMoreBooks = async () => {
-            const response = await fetch(
-                `https://www.googleapis.com/books/v1/volumes?q=${searchInput}${categoryBy}&orderBy=${orderBy}&key=AIzaSyAbeMRMRrF1839zC8XCLNhal8Y7zh9ShcI&maxResults=30&startIndex=${numberToAdd}`
-            );
-
-            if(!response.ok){
-                throw new Error("failed to fetch");
-            }
-
-            const data = await response.json()
-            const mappedArray =  data.items.map((item)=>{
-                const newObj = {
-                    id: item?.id,
-                    etag: item?.etag,
-                    title: item?.volumeInfo?.title,
-                    authors: item?.volumeInfo?.authors,
-                    piblishedDate: item?.volumeInfo?.publishedDate,
-                    categories: item?.volumeInfo?.categories,
-                    imageLink: item?.volumeInfo?.imageLinks?.thumbnail,
-                }
-                return newObj
-            })
-            return mappedArray;
-        };
-
-        try {
-            const fetchedMoreBooks = await fetchMoreBooks();
-            dispatch(dataActions.fetchMoreBooks(fetchedMoreBooks));
-            dispatch(dataActions.finishedRequest('success'))
-        } catch (e){
             console.log(e);
         }
     };
