@@ -1,4 +1,4 @@
-# How to open this project online
+## How to open this project online
 
 https://63065a80130b8403d2ad3eb7--spectacular-gumption-fc49f7.netlify.app/
 
@@ -21,7 +21,7 @@ The main difficulty was to construct pokemon object as its different aspects are
 
 ## Extra features
 
-Deleting pokemons from the favourite list
+Deleting pokemons from the favourite list.
 
 ## Room for improvement
 
