@@ -5,6 +5,12 @@
     width: 95%;
 }
 
+.btnContainer {
+  display: flex;
+  justify-content: center;
+  margin-top: .5rem;
+}
+
 .btn {
     margin: 1rem .5rem 1rem;
     padding: .5rem;
@@ -35,16 +41,28 @@
     color: black;
   }
 
-.homeBtn {
+.favBtn {
     background: #d18843;
 }
 
-.homeBtn:hover {
+.favBtn:hover {
     background: #c04903;
 }
 
-.homeBtn:active {
+.favBtn:active {
     background: #c00303;
+}
+
+.homeBtn {
+  background: #838f88;
+}
+
+.homeBtn:hover {
+  background: #4c534f;
+}
+
+.homeBtn:active {
+  background: #000000;
 }
 
 .pokes {

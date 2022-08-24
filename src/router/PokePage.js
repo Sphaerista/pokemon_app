@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { useParams, useNavigate } from "react-router-dom"
 import { useSelector } from 'react-redux'
 import styles from "./PokePage.module.css"
@@ -6,10 +6,11 @@ import styles from "./PokePage.module.css"
 const PokePage = () => {
   const [showCompared,setShowCompared] = useState(false)
   const [comparedPoke,setComparedPoke] = useState()
+  const [notFirstRun,setNotFirstRun] = useState(false)
+  const [myFavs, setMyFavs] = useState([]);
   const data = useSelector(state=>state.fetchData.booksList)
   const params = useParams().name
   const navigate = useNavigate()
-  console.log(params,data,data.length>0)
   
   const pokeObj = data.filter(poke => poke.name === params) ?? []
   const poke = pokeObj[0] ?? {}
@@ -19,6 +20,25 @@ const PokePage = () => {
     setComparedPoke(...showComparedPoke)
     showComparedPoke.length>0 ? setShowCompared(true) : setShowCompared(false)
   }
+  
+  const favHandler = (poke) => {
+    setNotFirstRun(true)
+        console.log(myFavs,poke)
+        if (myFavs.length>0){
+          return myFavs.filter(e=>e.name === poke.name).length>0 ? false : setMyFavs(prevArr=>[...prevArr,poke])
+        } else {setMyFavs([poke])}
+  }
+
+  useEffect(()=>{
+    const loadedFavs = JSON.parse(localStorage.getItem("favs"))
+    if (loadedFavs) {
+    setMyFavs(loadedFavs)}
+  },[])
+
+  useEffect(()=>{
+    if(notFirstRun===true){
+      localStorage.setItem("favs", JSON.stringify(myFavs))}
+    },[myFavs])
 
   // show the same generation only
   const pokeList = data.filter(item=> item.generation === poke.generation).map((poke) => {
@@ -69,6 +89,9 @@ const PokePage = () => {
       </div>
       <div>{showStatFirst}</div>
       </div>
+      <div className={styles.btnContainer}>
+      <button className={`${styles.btn} ${styles.favBtn}`} onClick={()=>favHandler(poke)}>Add to favs</button>
+      </div>
       </div>
       </div>
       
@@ -100,6 +123,9 @@ const PokePage = () => {
       <div>height</div>
       </div>
       <div>{showStatSecond}</div>
+      </div>
+      <div className={styles.btnContainer}>
+      <button className={`${styles.btn} ${styles.favBtn}`} onClick={()=>favHandler(comparedPoke)}>Add to favs</button>
       </div>
       </div>
       </>}
