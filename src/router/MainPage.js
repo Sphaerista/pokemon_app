@@ -4,6 +4,7 @@ import { useNavigate } from 'react-router-dom'
 import { fetchingData } from '../features/data-fetch/data-slice'
 import PokeItem from '../components/PokeItem'
 import styles from "./MainPage.module.css"
+import LoadingSpinner from '../UI/LoadingSpinner'
 
 const PokeList = () => {
     const navigate = useNavigate()
@@ -16,7 +17,7 @@ const PokeList = () => {
     const [defaultCatValue,setDefaultCatValue] = useState('SELECT')
     const [numberToAdd,setNumberToAdd]= useState(3)
     const dispatch = useDispatch()
-    const data = useSelector(state=>state.fetchData.booksList)
+    const data = useSelector(state=>state.fetchData.pokeList)
     const requestStatus = useSelector((state)=> state.fetchData.status)
     
     const loadMoreHandler = (e) => {
@@ -80,7 +81,8 @@ const PokeList = () => {
         
         // checking list existence
         const validdd = list?.length > 0 && requestStatus==='success'
-        const notValiddd = list?.length < 1 && requestStatus==='success'
+        const notValiddd = !validdd
+        // const notValiddd = list?.length < 1 && requestStatus==='success'
         const notFinished = list?.length < 1 && requestStatus==='pending'
         const notYetFinished = list?.length > 0 && requestStatus==='pending'
         
@@ -105,7 +107,7 @@ const PokeList = () => {
               name="generation"
               value={defaultCatValue}
             >
-              <option value="SELECT" defaultValue disabled hidden>SELECT GEN</option>
+              <option value="SELECT" defaultValue disabled hidden>filter by Gen</option>
               <option value="">all</option>
               <option value="no gen">nogen</option>
               <option value="generation-i">1</option>
@@ -129,10 +131,13 @@ const PokeList = () => {
         })}
       </div>
       <div className={styles.moreBtnContainer}>
-      {list.length>1 && <button onClick={loadMoreHandler}>Load more!</button>}
+      {list.length>1 && <button onClick={loadMoreHandler}>Load more</button>}
       </div>
     </>
-      }
+      } {notValiddd && 
+        <div className={styles.loading}>
+          <LoadingSpinner/>
+        </div>}
       </>
   )
 }

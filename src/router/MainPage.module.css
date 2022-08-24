@@ -18,6 +18,12 @@
   padding-left: 5%;
 }
 
+.loading {
+  display: flex;
+  justify-content: center;
+  margin-top: 10%;
+}
+
 .btn {
   margin: 1rem 4% 1rem 1rem;
   padding: .5rem;
@@ -108,13 +114,13 @@
     margin: 1rem 1rem 1rem;
     padding: .5rem;
     border: none;
-    width: 150px;
-    height: 50px;
+    width: 130px;
+    height: 45px;
     background-color: rgb(126, 168, 252);
     border: 1px solid rgb(219, 231, 255);
     color: white;
     font-weight: bold;
-    font-size: larger;
+    /* font-size: larger; */
     display: flex;
     justify-content: center;
     align-items: center;

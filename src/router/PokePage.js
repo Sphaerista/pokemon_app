@@ -2,13 +2,14 @@ import React, { useEffect, useState } from 'react'
 import { useParams, useNavigate } from "react-router-dom"
 import { useSelector } from 'react-redux'
 import styles from "./PokePage.module.css"
+import LoadingSpinner from '../UI/LoadingSpinner'
 
 const PokePage = () => {
   const [showCompared,setShowCompared] = useState(false)
   const [comparedPoke,setComparedPoke] = useState()
   const [notFirstRun,setNotFirstRun] = useState(false)
   const [myFavs, setMyFavs] = useState([]);
-  const data = useSelector(state=>state.fetchData.booksList)
+  const data = useSelector(state=>state.fetchData.pokeList)
   const params = useParams().name
   const navigate = useNavigate()
   
@@ -133,7 +134,9 @@ const PokePage = () => {
       </div>
       </>}
       {notValiddd &&
-      <div>Loading spinner</div>}
+      <div className={styles.loading}>
+      <LoadingSpinner/>
+    </div>}
       </>
   )
 }
