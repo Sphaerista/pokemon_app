@@ -1,6 +1,7 @@
 import React, { useState } from 'react'
 import { useParams, useNavigate } from "react-router-dom"
 import { useSelector } from 'react-redux'
+import styles from "./PokePage.module.css"
 
 const PokePage = () => {
   const [showCompared,setShowCompared] = useState(false)
@@ -25,10 +26,20 @@ const PokePage = () => {
   })
   let showStatFirsttest = poke?.stats ?? []
   let showStatFirst = showStatFirsttest.map((stat)=>{
-    return <div>{stat.stat.name} : {stat.base_stat}</div>
+    return <>
+    <div className={styles.stat}>
+    <div>{stat.stat.name}</div>
+    <div>{stat.base_stat}</div>
+    </div>
+    </>
   })  
   let showStatSecond = comparedPoke?.stats.map((stat)=>{
-    return <div>{stat.stat.name} : {stat.base_stat}</div>
+    return <>
+    <div className={styles.stat}>
+    <div>{stat.base_stat}</div>
+    <div>{stat.stat.name}</div>
+    </div>
+    </>
   })  
   
   const validdd = data.length>0 && poke
@@ -36,17 +47,33 @@ const PokePage = () => {
   return (
     <>
     {validdd &&
-    <>
-      <div>PokePage</div>
-      <button onClick={()=>{navigate("/")}}>Home</button>
-      <h1>{params}</h1>
-      <img src={poke.img}/>
-      <div>id: {poke?.id}</div>
-      <div>generation: {poke?.generation}</div>
-      <div>weight: {poke?.weight}</div>
-      <div>height: {poke?.height}</div>
-      <h3>stats: {showStatFirst}</h3>
-      <div>Select poke
+    <>   
+      <div className={styles.btnsContainer}>
+      <button className={`${styles.btn} ${styles.backBtn}`} onClick={() => navigate(-1)}>Back</button>
+      <button className={`${styles.btn} ${styles.homeBtn}`} onClick={()=>{navigate("/")}}>Home</button>
+      </div>
+      <div className={styles.pokes}>
+      <div className={styles.leftSide}>
+      <div className={styles.poke}>
+      <h1>{poke?.name}</h1>
+      <div className={styles.imgContainer}><img src={poke?.img}/></div>
+      <div className={styles.generation}>{poke?.generation}</div>
+      <div className={styles.stats}>
+      <div className={styles.stat}>
+      <div>weight</div>
+      <div>{poke?.weight}</div>
+      </div>
+      <div className={styles.stat}>
+      <div>height</div>
+      <div>{poke?.height}</div>
+      </div>
+      <div>{showStatFirst}</div>
+      </div>
+      </div>
+      </div>
+      
+      <div className={`${styles.rightSide} ${showCompared && styles.rightSideActive}`}>
+      <div className={styles.compareWith}>Compare with
               <select
                 onChange={comparisonHandler}
                 id="pokelist"
@@ -58,19 +85,27 @@ const PokePage = () => {
                 {pokeList}
               </select>
       </div>
-      <div>Poke 2</div>
-    </>}
       {showCompared && <>
-        <h1>{comparedPoke.name}</h1>
-      <div>id: {comparedPoke.id}</div>
-      <div>generation: {comparedPoke.generation}</div>
-      <div>weight: {comparedPoke.weight}</div>
-      <div>height: {comparedPoke.height}</div>
-      <h3>stats: {showStatSecond}</h3>
+      <div className={styles.poke}>
+      <h1>{comparedPoke.name}</h1>
+      <div className={styles.imgContainer}><img src={comparedPoke.img}/></div>
+      <div className={styles.generation}>{comparedPoke.generation}</div>
+      <div className={styles.stats}>
+      <div className={styles.stat}>
+      <div>{comparedPoke.weight}</div>
+      <div>weight</div>
+      </div>
+      <div className={styles.stat}>
+      <div>{comparedPoke.height}</div>
+      <div>height</div>
+      </div>
+      <div>{showStatSecond}</div>
+      </div>
+      </div>
       </>}
-      {validdd &&
-      <button onClick={() => navigate(-1)}>Back</button>
-      }
+      </div>
+      </div>
+      </>}
       {notValiddd &&
       <div>Loading spinner</div>}
       </>
