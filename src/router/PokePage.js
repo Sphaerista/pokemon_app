@@ -24,7 +24,6 @@ const PokePage = () => {
   
   const favHandler = (poke) => {
     setNotFirstRun(true)
-      console.log(myFavs,poke)
       if (myFavs.length>0){
         return myFavs.filter(e=>e.name === poke.name).length>0 ? false : setMyFavs(prevArr=>[...prevArr,poke])
       } else {setMyFavs([poke])}
@@ -43,12 +42,12 @@ const PokePage = () => {
 
   // show the same generation only
   const pokeList = data.filter(item=> item.generation === poke.generation).map((poke) => {
-    return <option value={poke.id}>{poke.name}</option>
+    return <option key={poke.id} value={poke.id}>{poke.name}</option>
   })
   let showStatFirsttest = poke?.stats ?? []
   let showStatFirst = showStatFirsttest.map((stat)=>{
     return <>
-    <div className={styles.stat}>
+    <div key={stat.stat.name} className={styles.stat}>
     <div>{stat.stat.name}</div>
     <div>{stat.base_stat}</div>
     </div>
@@ -57,7 +56,7 @@ const PokePage = () => {
 
   let showStatSecond = comparedPoke?.stats.map((stat)=>{
     return <>
-    <div className={styles.stat}>
+    <div key={stat.stat.name} className={styles.stat}>
     <div>{stat.base_stat}</div>
     <div>{stat.stat.name}</div>
     </div>

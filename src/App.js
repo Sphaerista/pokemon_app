@@ -1,18 +1,13 @@
-import React, { useEffect } from 'react';
+import React from 'react';
 import { Routes, Route } from 'react-router-dom';
 import './App.css';
 import PokeList from './router/MainPage';
 import PokePage from './router/PokePage';
 import PokeFavs from './components/PokeFavs';
-import { useDispatch } from 'react-redux';
-import { fetchingData } from './features/data-fetch/data-slice';
 
 
 function App() {
-    const dispatch = useDispatch()
-        useEffect(()=>{
-          dispatch(fetchingData())
-        },[])
+
 
   return (
     <>

@@ -8,7 +8,7 @@ const PokeItem = (props) => {
 
   let showStat = props.stats.map((stat)=>{
     return (
-      <div className={styles.stat}>
+      <div key={stat.stat.name} className={styles.stat}>
         <div>{stat.stat.name} :</div>
         <div className={styles.statPoint}>{stat.base_stat}</div>
       </div>)

@@ -2,7 +2,6 @@ import React, { useEffect, useRef, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { useNavigate } from 'react-router-dom'
 import { fetchingData } from '../features/data-fetch/data-slice'
-// import { fetchingData } from '../features/data-fetch/data-slice-new'
 import PokeItem from '../components/PokeItem'
 import styles from "./MainPage.module.css"
 import LoadingSpinner from '../UI/LoadingSpinner'
@@ -24,7 +23,6 @@ const PokeList = () => {
     
   const loadMoreHandler = (e) => {
     e.preventDefault()
-    console.log(list,data,permData,pokemosRef.current)
     setList(permData.slice(0,numberToAdd+numz))
     setNumberToAdd(prev=>prev+numz)
     }
@@ -33,11 +31,11 @@ const PokeList = () => {
     setSearchInput(e.target.value);
   }
   const searchHandler = (e) => {
+    setNotFirstRun(true)
     e.preventDefault()
     pokemosRef.current = data
     setDefaultCatValue('SELECT')
     const foundedpokemon = pokemosRef.current.filter(find =>  find.name === searchInput );
-    console.log(foundedpokemon)
     setList(() => foundedpokemon);
   }
 
@@ -45,20 +43,18 @@ const PokeList = () => {
     setDefaultCatValue(e.target.value)
     setNumberToAdd(numz)
     if( !!e.target.value) {
-      const foundgeneration = pokemosRef.current.filter(poke=> poke.generation === e.target.value )
+      const foundgeneration = data.filter(poke=> poke.generation === e.target.value )
       setPermData(foundgeneration)
-      console.log(foundgeneration,pokemosRef.current,permData)
       setList(() => foundgeneration.slice(0,numz));
     } else {
       setNumberToAdd(numz)
-      setPermData(pokemosRef.current)
-      setList(() => pokemosRef.current.slice(0,numz))
+      setPermData(data)
+      setList(() => data.slice(0,numz))
     }
   }
 
   const saveToFavsHandler = (poke) => {
     setNotFirstRun(true)
-    console.log(myFavs,poke)
     if (myFavs.length>0){
       return myFavs.filter(e=>e.name === poke.name).length>0 ? false : setMyFavs(prevArr=>[...prevArr,poke])
     } else {setMyFavs([poke])}
@@ -75,7 +71,7 @@ const PokeList = () => {
     setPermData(data)
     setList(data.slice(0,numz))
     if(data.length<1) {
-      dispatch(fetchingData(testfn,50))
+      dispatch(fetchingData(testfn,490))
     }
     const loadedFavs = JSON.parse(localStorage.getItem("favs"))
     if (loadedFavs) {
@@ -91,8 +87,8 @@ const PokeList = () => {
       
   // checking list existence
     const validdd = list?.length > 0 && requestStatus==='success'
-    const notValiddd = list?.length < 1 && requestStatus==='success'
     const notFinished = list?.length < 1 && requestStatus==='pending'
+    const notValiddd = list?.length < 1 && requestStatus==='success' && notFirstRun
         
   return (
       <>
@@ -117,15 +113,11 @@ const PokeList = () => {
         >
           <option value="SELECT" defaultValue disabled hidden>filter by Gen</option>
           <option value="">all</option>
-          <option value="no gen">nogen</option>
+          <option value="no gen">no Generation</option>
           <option value="generation-i">1</option>
           <option value="generation-ii">2</option>
           <option value="generation-iii">3</option>
           <option value="generation-iv">4</option>
-          <option value="generation-v">5</option>
-          <option value="generation-vi">6</option>
-          <option value="generation-vii">7</option>
-          <option value="generation-viii">8</option>
         </select>
       </div>
       </div>
@@ -139,7 +131,7 @@ const PokeList = () => {
           })}
         </div>
         <div className={styles.moreBtnContainer}>
-        {data.length>1 && <button onClick={loadMoreHandler}>Load more</button>}
+        {permData.length>numz && <button onClick={loadMoreHandler}>Load more</button>}
         </div>
       </>
       }
